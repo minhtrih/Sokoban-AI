@@ -1,6 +1,3 @@
-/**
- * Created by hoangminhtri on 22/03/2017.
- */
 var json = {
     "listPoints": [
         {
@@ -390,134 +387,179 @@ var json = {
         }
     ]
 };
-// var person, box, goal;
-// function input(person, box, goal){
-//     person = "x=" + json.listPoints[person].point.x + ",y=" + json.listPoints[person].point.y;
-//     box = "x=" + json.listPoints[box].point.x + ",y=" + json.listPoints[box].point.y;
-//     goal = "x=" + json.listPoints[goal].point.x + ",y=" + json.listPoints[goal].point.y;
-//     return "person:" + person + " box:" + box + " goal:" +goal;
-// }
 
-var player = [0,2];
-var box = [2,2];
-var goal = [0,9];
-var row, col;
-var hChoice;
-var cost;
-
-function coordinate(row, col) {
-    this.row = row;
-    this.col = col;
-}
-
-
-function checkExits(json, point) {
+function checkExits(x,y) {
     for (var i in json.listPoints) {
-        if(point[0] == json.listPoints[i].point.x && point[1] == json.listPoints[i].point.y)
+        if(x == json.listPoints[i].point.x && y == json.listPoints[i].point.y)
             return true;
     }
     return false;
 }
 
-console.log(checkExits(json, player));
-
-
-function manhattan(pos0, pos1){
-    var d1 = Math.abs(pos1.row - pos0.row);
-    var d2 = Math.abs(pos1.col - pos0.col);
-    return d1 + d2;
-}
-function calculate(s, method) {
-    var sum = 0;
-    this.person = state.person;
-    sum += getDist(person, box, method);
-    sum += getDist(box, goal, method);
-    return sum;
-}
-function getDist(obj, sets, method) {
-    var minDist = 1000000;
-    for(var c in sets){
-        var dist;
-        if(method == "m"){
-            dist = manhattan(obj, c);
-        }
-        if(dist < minDist){
-            minDist = dist;
-        }
-    }
-    return minDist;
-}
-function getHeuristic(state) {
-    if (hChoice == "m"){
-        return calculate(state, "m");
-    }
-}
-
-
-var walls;
-var initialState;
-function problem(walls, initialState, goal) {
-    this.walls = walls;
-    this.initialState = initialState;
-    this.goal = goal;
-}
-function goalTest(state) {
-    if (!goal.contains(box)){
-        return false;
-    }
-    return true;
-}
-
-function wallsContain(json, row, col) {
+function point() {
+    var point = document.getElementsByTagName("g")[0];
     for (var i in json.listPoints) {
-        if(row == json.listPoints[i].point.x && col == json.listPoints[i].point.y)
-            return false;
+        var x = json.listPoints[i].point.x;
+        var y = json.listPoints[i].point.y;
+        if (checkExits(x,y)){
+            var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'circle'); //Create a path in SVG's namespace
+            newElement.style.cx = (x+1)*80;
+            newElement.style.cy = (9-y)*80;
+            newElement.style.r = 3;
+            point.appendChild(newElement);
+        }
     }
-    return true;
-}
-function goalContain(goal, row, col) {
-    if (goal[0] == row && goal[1] == col) {
-        return true;
-    }
-    else {
-        return false;
-    }
-}
-
-function deadlockTest(state) {
-    row = box[0];
-    col = box[1];
-    if (!goalContain(goal, row, col)) {
-        if (wallsContain(json, row-1, col)&&wallsContain(json, row, col-1))
-            return true; //top & left
-        if (wallsContain(json, row-1, col)&&wallsContain(json, row, col+1))
-            return true; //top & right
-        if (wallsContain(json, row+1, col)&&wallsContain(json, row, col-1))
-            return true; //bottom & left
-        if (wallsContain(json, row+1, col)&&wallsContain(json, row, col+1))
-            return true; //bottom & right
-
-        if (wallsContain(json, row-1, col-1)&&wallsContain(json, row-1, col)&&
-            wallsContain(json, row-1, col+1)&&wallsContain(json, row, col-2)&&
-            wallsContain(json, row, col+2)&&(!goalContain(goal, row, col-1))&&
-            !goalContain(goal, row, col+1))
-            return true; //top & sides
-        if (wallsContain(json, row+1, col-1)&&wallsContain(json, row+1, col)&&
-            wallsContain(json, row+1, col+1)&&wallsContain(json, row, col-2)&&
-            wallsContain(json, row, col+2)&&(!goalContain(goal, row, col-1))&&
-            (!goalContain(goal, row, col+1)))
-            return true; //bottom & sides
-        if (wallsContain(json, row-1, col-1)&&wallsContain(json, row, col-1)&&
-            wallsContain(json, row+1, col-1)&&wallsContain(json, row-2, col)&&
-            wallsContain(json, row+2, col)&&(!goalContain(goal, row-1, col))&&
-            (!goalContain(goal, row+1, col)))
-            return true; //left & vertical
-        if (wallsContain(json, row-1, col+1)&&wallsContain(json, row, col+1)&&
-            wallsContain(json, row+1, col+1)&&wallsContain(json, row-2, col)&&
-            wallsContain(json, row+2, col)&&(!goalContain(goal, row-1, col))&&
-            (!goalContain(goal, row+1, col)))
-            return true; //right & top/bottom
-    }
-    return false;
+    return point;
 }
 
+function drawMap() {
+    var path = document.getElementById("svg-map"); //Get svg element
+    for (var i in json.listPoints) {
+        var x = json.listPoints[i].point.x;
+        var y = json.listPoints[i].point.y;
+        if(checkExits(x,y)){
+            if(checkExits(x+1,y)){
+                var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'path'); //Create a path in SVG's namespace
+                newElement.setAttribute("d","M " + (x+1)*80 + ' ' + (9-y)*80 + " l 80 0"); //Set path's data
+                newElement.style.stroke = "#000"; //Set stroke colour
+                newElement.style.strokeWidth = "3px"; //Set stroke width
+                path.appendChild(newElement);
+            }
+            if(checkExits(x-1,y)){
+                var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'path'); //Create a path in SVG's namespace
+                newElement.setAttribute("d","M " + (x+1)*80 + ' ' + (9-y)*80 + " l -80 0"); //Set path's data
+                newElement.style.stroke = "#000"; //Set stroke colour
+                newElement.style.strokeWidth = "3px"; //Set stroke width
+                path.appendChild(newElement);
+            }
+            if(checkExits(x,y+1)){
+                var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'path'); //Create a path in SVG's namespace
+                newElement.setAttribute("d","M " + (x+1)*80 + ' ' + (9-y)*80 + " l 0 -80"); //Set path's data
+                newElement.style.stroke = "#000"; //Set stroke colour
+                newElement.style.strokeWidth = "3px"; //Set stroke width
+                path.appendChild(newElement);
+            }
+            if(checkExits(x,y-1)){
+                var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'path'); //Create a path in SVG's namespace
+                newElement.setAttribute("d","M " + (x+1)*80 + ' ' + (9-y)*80 + " l 0 80"); //Set path's data
+                newElement.style.stroke = "#000"; //Set stroke colour
+                newElement.style.strokeWidth = "3px"; //Set stroke width
+                path.appendChild(newElement);
+            }
+        }
+    }
+    return path;
+}
+
+function resultSokoban(result) {
+    var x = 80;
+    var y = 320;
+    var box = [2,2];
+    var player = [0,5];
+    var point = x+','+y+' ';
+    var i = 0;
+    Box(2,2);
+    Player(0,5);
+    var interval = setInterval(function() {
+        if (i%2 == 0){
+            switch (result[i]) {
+                case 'u':
+                    y = y - 80;
+                    point += x+','+y+' ';
+                    updatePlayer(player[0], player[1]+1);
+                    player = [player[0], player[1]+1];
+                    if(x/80 - 1 == box[0] && 9- y/80 == box[1]){
+                        updateBox(box[0], box[1]+1);
+                        box = [box[0], box[1]+1];
+                    }
+                    break;
+                case 'r':
+                    x = x + 80;
+                    point += x+','+y+' ';
+                    updatePlayer(player[0]+1, player[1]);
+                    player = [player[0]+1, player[1]];
+                    if(x/80 - 1 == box[0] && 9- y/80 == box[1]){
+                        updateBox(box[0]+1, box[1]);
+                        box = [box[0]+1, box[1]];
+                    }
+                    break;
+                case 'd':
+                    y = y + 80;
+                    point += x+','+y+' ';
+                    updatePlayer(player[0], player[1]-1);
+                    player = [player[0], player[1]-1];
+                    if(x/80 - 1 == box[0] && 9- y/80 == box[1]){
+                        updateBox(box[0], box[1]-1);
+                        box = [box[0], box[1]-1];
+                    }
+                    break;
+                case 'l':
+                    x = x - 80;
+                    point += x+','+y+' ';
+                    updatePlayer(player[0]-1, player[1]);
+                    player = [player[0]-1, player[1]];
+                    if(x/80 - 1 == box[0] && 9- y/80 == box[1]){
+                        updateBox(box[0]-1, box[1]);
+                        box = [box[0]-1, box[1]];
+                    }
+                    break;
+            }
+            document.getElementsByTagName("polyline")[0].setAttribute("points", point);
+
+        }
+        i++;
+        if (i>= result.length) {
+            clearInterval(interval);
+        }
+    }, 500);
+}
+
+function updateBox(x,y) {
+    var box = document.getElementById('box');
+    box.style.x = (x+1)*80-10;
+    box.style.y = (9-y)*80-10;
+}
+
+function Box(x,y) {
+    var point = document.getElementsByTagName("g")[0];
+    if (checkExits(x,y)){
+        var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'rect'); //Create a path in SVG's namespace
+        newElement.setAttribute("id", "box");
+        newElement.style.x = (x+1)*80-10;
+        newElement.style.y = (9-y)*80-10;
+        newElement.style.width = 20;
+        newElement.style.height = 20;
+        newElement.style.fill = 'blue';
+        point.appendChild(newElement);
+    }
+    return point;
+}
+
+function updatePlayer(x,y) {
+    var player = document.getElementById('player');
+    player.style.cx = (x+1)*80;
+    player.style.cy = (9-y)*80;
+}
+
+function Player(x,y) {
+    var point = document.getElementsByTagName("g")[0];
+    if (checkExits(x,y)){
+        var newElement = document.createElementNS("http://www.w3.org/2000/svg", 'circle'); //Create a path in SVG's namespace
+        newElement.setAttribute("id", "player");
+        newElement.style.cx = (x+1)*80;
+        newElement.style.cy = (9-y)*80;
+        newElement.style.r = 15;
+        newElement.style.fill = 'green';
+        point.appendChild(newElement);
+    }
+    return point;
+}
+
+var result = "r u r r d d l d l d r d r u u u u r u l l l d l u u u ";
+$(document).ready(function () {
+    $(function () {
+        drawMap();
+        point();
+        resultSokoban(result);
+    });
+});

@@ -1,29 +1,22 @@
 {
-  "name": "javascript-astar",
-  "version": "0.4.1",
-  "description": "astar search algorithm in JavaScript",
-  "main": "./astar.js",
-  "repository": {
-    "type": "git",
-    "url": "git://github.com/bgrins/javascript-astar.git"
-  },
-  "keywords": [],
-  "author": "Brian Grinstead",
-  "license": "MIT",
-  "bugs": {
-    "url": "https://github.com/bgrins/javascript-astar/issues"
-  },
-  "homepage": "http://bgrins.github.io/javascript-astar",
-  "devDependencies": {
-    "grunt": "~0.4.5",
-    "grunt-contrib-qunit": "~0.5.0",
-    "grunt-contrib-jshint": "~0.10.0"
+  "name": "sokobanjs",
+  "version": "0.0.0",
+  "private": true,
+  "scripts": {
+    "start": "node ./bin/www"
   },
   "dependencies": {
     "arraylist": "^0.1.0",
-    "grunt": "^0.4.5",
+    "body-parser": "~1.16.0",
+    "cookie-parser": "~1.4.3",
+    "debug": "~2.6.0",
+    "express": "~4.14.1",
     "hashset": "0.0.6",
+    "jade": "~1.11.0",
+    "johnny-five": "^0.10.8",
+    "morgan": "~1.7.0",
     "priorityqueuejs": "^1.0.0",
+    "serve-favicon": "~2.3.2",
     "util": "^0.10.3"
   }
 }
